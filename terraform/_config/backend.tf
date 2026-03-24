@@ -6,9 +6,5 @@ terraform {
     region = ""
 
     use_lockfile = true
-
-    assume_role = {
-      role_arn = ""
-    }
   }
 }

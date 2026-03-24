@@ -8,14 +8,12 @@ TF_PLAN_FILE ?= local.tfplan
 TF_BACKEND_BUCKET   ?= cloud-nova-corp-terraform
 TF_BACKEND_KEY      ?= bananas.rails/$(ENVIRONMENT)/terraform.tfstate
 TF_BACKEND_REGION   ?= eu-west-1
-TF_BACKEND_ROLE_ARN ?= arn:aws:iam::838650235286:role/terraform-apply
 
 BACKEND_OPTIONS = \
 	-backend-config 'bucket=$(TF_BACKEND_BUCKET)' \
 	-backend-config 'use_lockfile=true' \
 	-backend-config 'key=$(TF_BACKEND_KEY)' \
-	-backend-config 'region=$(TF_BACKEND_REGION)' \
-	-backend-config 'assume_role={role_arn="$(TF_BACKEND_ROLE_ARN)"}'
+	-backend-config 'region=$(TF_BACKEND_REGION)'
 
 TF_VARS = TF_VAR_environment=$(ENVIRONMENT) TF_VAR_remote_state_s3_bucket=$(TF_BACKEND_BUCKET) TF_VAR_remote_state_s3_region=$(TF_BACKEND_REGION)
 

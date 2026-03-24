@@ -15,3 +15,13 @@ data "terraform_remote_state" "meta" {
     key    = "meta.terraform/terraform.tfstate"
   }
 }
+
+data "terraform_remote_state" "bananas" {
+  backend = "s3"
+
+  config = {
+    bucket = var.remote_state_s3_bucket
+    region = var.remote_state_s3_region
+    key    = "bananas.terraform/${var.environment}/terraform.tfstate"
+  }
+}

@@ -37,6 +37,7 @@ on:
 jobs:
   plan:
     runs-on: ${{inputs.runner}}
+    timeout-minutes: 30
 
     environment: ${{ inputs.github_environment }}
 

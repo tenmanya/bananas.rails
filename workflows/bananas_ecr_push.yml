@@ -1,0 +1,38 @@
+name: Bananas Push Image
+
+on:
+  workflow_call:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to use as the image tag'
+        required: true
+        type: string
+      github_environment:
+        description: 'GitHub environment to publish to'
+        required: true
+        type: string
+
+jobs:
+  push_image:
+    runs-on: ubuntu-24.04
+
+    environment: ${{ inputs.github_environment }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN_BANANAS_DEPLOY }}
+          aws-region: ${{ vars.AWS_IAM_REGION_BANANAS_DEPLOY }}
+
+      - name: Login to ECR
+        id: ecr_login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        env:
+          IMAGE: ${{ steps.ecr_login.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY_BANANAS }}:${{ inputs.commit_sha }}
+        run: |
+          docker build --tag "$IMAGE" bananas/
+          docker push "$IMAGE"

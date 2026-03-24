@@ -1,0 +1,23 @@
+name: Bananas CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/rails_ci.yml
+    with:
+      working_directory: bananas
+
+  push_image:
+    needs: ci
+    uses: ./.github/workflows/bananas_ecr_push.yml
+    with:
+      commit_sha: ${{ github.sha }}
+      github_environment: bananas-ecr-push

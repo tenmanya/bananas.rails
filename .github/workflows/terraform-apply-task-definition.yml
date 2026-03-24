@@ -14,7 +14,7 @@ jobs:
     with:
       environment: production
       github_environment: production
-      terraform_plan_file_s3_prefix: s3://cloud-nova-corp/_tfplan/bananas.rails
+      terraform_plan_file_s3_prefix: s3://cloud-nova-corp-terraform/_tfplan/bananas.rails
       terraform_plan_id: ${{ github.run_id }}
       terraform_version_file: terraform/_config/versions.tf.json
     secrets: inherit

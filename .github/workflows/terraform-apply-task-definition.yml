@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   plan-production:
-    timeout-minutes: 30
     uses: ./.github/workflows/plan.yml
     with:
       environment: production

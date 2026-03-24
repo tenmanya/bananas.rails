@@ -1,5 +1,5 @@
-name: Terraform apply ECS task definition
-run-name: terraformm-apply - ${{ inputs.module }}
+name: Terrafrom apply ECS task definition
+run-name: terraformm-apply-ecs-task-definition - ${{ inputs.module }}
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   plan-production:
+    timeout-minutes: 30
     uses: ./.github/workflows/plan.yml
     with:
       environment: production

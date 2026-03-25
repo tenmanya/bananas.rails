@@ -15,7 +15,7 @@ BACKEND_OPTIONS = \
 	-backend-config 'key=$(TF_BACKEND_KEY)' \
 	-backend-config 'region=$(TF_BACKEND_REGION)'
 
-TF_VARS = TF_VAR_environment=$(ENVIRONMENT) TF_VAR_remote_state_s3_bucket=$(TF_BACKEND_BUCKET) TF_VAR_remote_state_s3_region=$(TF_BACKEND_REGION)
+TF_VARS = TF_VAR_environment=$(ENVIRONMENT) TF_VAR_remote_state_s3_bucket=$(TF_BACKEND_BUCKET) TF_VAR_remote_state_s3_region=$(TF_BACKEND_REGION) TF_VAR_image=$(TF_VAR_IMAGE)
 
 .DEFAULT_GOAL := validate
 

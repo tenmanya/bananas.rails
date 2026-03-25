@@ -57,3 +57,7 @@ resource "aws_ecs_task_definition" "bananas" {
     },
   ]))
 }
+
+output "ecs_task_defintion_bananas" {
+  value = aws_ecs_task_definition.bananas.arn
+}

@@ -9,6 +9,10 @@ on:
         required: true
         type: string
   workflow_call:
+    outputs:
+      ecs_task_definition_bananas:
+        description: 'ARN of the deployed ECS task definition'
+        value: ${{ jobs.apply-production.outputs.ecs_task_definition_bananas }}
     inputs:
       image_tag:
         description: 'The ECR image tag to deploy'

@@ -21,9 +21,6 @@ jobs:
     with:
       commit_sha: ${{ github.sha }}
       github_environment: bananas-ecr-push
-      aws_iam_role_arn: ${{ vars.AWS_IAM_ROLE_ARN_BANANAS_DEPLOY }}
-      aws_region: ${{ vars.AWS_IAM_REGION_BANANAS_DEPLOY }}
-      ecr_repository: ${{ vars.AWS_ECR_REPOSITORY_BANANAS }}
       build_context: bananas/
 
   output_image_tag:

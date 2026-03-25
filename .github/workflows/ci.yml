@@ -38,3 +38,12 @@ jobs:
     with:
       image_tag: ${{ needs.push_image.outputs.image_tag }}
     secrets: inherit
+
+  output_task_definition:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    needs: apply_task_definition
+    steps:
+      - name: Output ECS task definition ARN
+        run: |
+          echo "Deployed ECS task definition: ${{ needs.apply_task_definition.outputs.ecs_task_definition_bananas }}"

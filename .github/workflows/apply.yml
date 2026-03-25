@@ -2,6 +2,10 @@ name: Terraform Apply
 
 on:
   workflow_call:
+    outputs:
+      ecs_task_definition_bananas:
+        description: 'ARN of the deployed ECS task definition'
+        value: ${{ jobs.apply.outputs.ecs_task_definition_bananas }}
     inputs:
       environment:
         description: 'Environment to deploy to'
@@ -43,6 +47,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     environment: ${{ inputs.github_environment }}
 
+    outputs:
+      ecs_task_definition_bananas: ${{ steps.make_apply.outputs.ecs_task_definition_bananas }}
+
     steps:
       - uses: actions/checkout@v6
 
@@ -71,6 +78,7 @@ jobs:
           role-duration-seconds: ${{ inputs.iam_role_duration_seconds }}
 
       - name: make apply
+        id: make_apply
         env:
           # set defined by GitHub repostiory environment
           TF_BACKEND_BUCKET: ${{ vars.TF_BACKEND_BUCKET }}
@@ -79,5 +87,7 @@ jobs:
           TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
         run: |
           set -euo pipefail
-          ENVIRONMENT=${{ inputs.environment }} TF_VAR_IMAGE=${{ inputs.image_tag }} make -f "${{ github.workspace }}/terraform/Makefile" apply_from_plan_file
+          APPLY_OUTPUT=$(ENVIRONMENT=${{ inputs.environment }} TF_VAR_IMAGE=${{ inputs.image_tag }} make -f "${{ github.workspace }}/terraform/Makefile" apply_from_plan_file | tee /dev/stderr)
+          ECS_TASK_DEFINITION=$(echo "$APPLY_OUTPUT" | grep 'ecs_task_defintion_bananas' | sed 's/.*= "\(.*\)"/\1/')
+          echo "ecs_task_definition_bananas=$ECS_TASK_DEFINITION" >> "$GITHUB_OUTPUT"
 

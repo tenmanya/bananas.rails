@@ -28,4 +28,5 @@ jobs:
     needs: push_image
     steps:
       - name: Output image tag
-        run: echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"
+        run: |
+          echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"

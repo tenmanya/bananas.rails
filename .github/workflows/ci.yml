@@ -17,7 +17,24 @@ jobs:
 
   push_image:
     needs: ci
-    uses: ./.github/workflows/bananas_ecr_push.yml
+    uses: ./.github/workflows/ecr_push.yaml
     with:
       commit_sha: ${{ github.sha }}
       github_environment: bananas-ecr-push
+      build_context: bananas/
+
+  output_image_tag:
+    runs-on: ubuntu-24.04
+    needs: push_image
+    steps:
+      - name: Output image tag
+        run: |
+          echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"
+
+  apply_task_definition:
+    if: github.ref == 'refs/heads/main'
+    needs: push_image
+    uses: ./.github/workflows/terraform_plan_and_apply.yml
+    with:
+      image_tag: ${{ needs.push_image.outputs.image_tag }}
+    secrets: inherit

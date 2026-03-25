@@ -15,18 +15,6 @@ on:
         description: 'GitHub environment to publish to'
         required: true
         type: string
-      aws_iam_role_arn:
-        description: 'AWS IAM role ARN to assume for deployment'
-        required: true
-        type: string
-      aws_region:
-        description: 'AWS region'
-        required: true
-        type: string
-      ecr_repository:
-        description: 'ECR repository name'
-        required: true
-        type: string
       build_context:
         description: 'Docker build context directory'
         required: true
@@ -46,8 +34,8 @@ jobs:
 
       - uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: ${{ inputs.aws_iam_role_arn }}
-          aws-region: ${{ inputs.aws_region }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN_BANANAS_DEPLOY }}
+          aws-region: ${{ vars.AWS_IAM_REGION_BANANAS_DEPLOY }}
 
       - name: Login to ECR
         id: ecr_login
@@ -56,7 +44,7 @@ jobs:
       - name: Build and push image
         id: build_push
         env:
-          IMAGE: ${{ steps.ecr_login.outputs.registry }}/${{ inputs.ecr_repository }}:${{ inputs.commit_sha }}
+          IMAGE: ${{ steps.ecr_login.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY_BANANAS }}:${{ inputs.commit_sha }}
         run: |
           docker build --tag "$IMAGE" ${{ inputs.build_context }}
           docker push "$IMAGE"

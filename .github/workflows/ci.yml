@@ -34,7 +34,7 @@ jobs:
   apply_task_definition:
     if: github.ref == 'refs/heads/main'
     needs: push_image
-    uses: ./.github/workflows/terraform-apply-task-definition.yml
+    uses: ./.github/workflows/terraform_plan_and_apply.yml
     with:
       image_tag: ${{ needs.push_image.outputs.image_tag }}
     secrets: inherit

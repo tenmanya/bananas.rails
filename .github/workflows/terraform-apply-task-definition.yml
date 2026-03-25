@@ -3,6 +3,12 @@ run-name: terraformm-apply-ecs-task-definition - ${{ inputs.module }}
 
 on:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: 'The ECR image tag to deploy'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -17,6 +23,7 @@ jobs:
       terraform_plan_file_s3_prefix: s3://cloud-nova-corp-terraform/_tfplan/bananas.rails
       terraform_plan_id: ${{ github.run_id }}
       terraform_version_file: terraform/_config/versions.tf.json
+      image_tag: ${{ inputs.image_tag }}
     secrets: inherit
 
   apply-production:
@@ -28,4 +35,5 @@ jobs:
       terraform_plan_file_s3_prefix: s3://cloud-nova-corp-terraform/_tfplan/bananas.rails
       terraform_plan_id: ${{ github.run_id }}
       terraform_version_file: terraform/_config/versions.tf.json
+      image_tag: ${{ inputs.image_tag }}
     secrets: inherit

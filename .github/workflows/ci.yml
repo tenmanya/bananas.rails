@@ -30,3 +30,10 @@ jobs:
       - name: Output image tag
         run: |
           echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"
+
+  apply_task_definition:
+    needs: push_image
+    uses: ./.github/workflows/terraform-apply-task-definition.yml
+    with:
+      image_tag: ${{ needs.push_image.outputs.image_tag }}
+    secrets: inherit

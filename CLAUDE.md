@@ -40,7 +40,7 @@ bin/rails server        # dev server (port 3000)
 Runs on all branches (push + PR + manual). Executes tests, lint, and security scans only. Can also be called as a reusable workflow by `deploy.yml`.
 
 ### `deploy.yml`
-Triggered on push to `main` or manually via `workflow_dispatch`. When triggered manually, prompts for `deployment_type` (`Blue/Green` or `Canary 10%, 5 minutes`). Full pipeline:
+Triggered manually via `workflow_dispatch` only. Prompts for `deployment_type` (`Blue/Green` or `Canary 10%, 5 minutes`). Full pipeline:
 1. `ci` — calls `ci.yml` (tests/lint/security)
 2. `push_image` — builds Docker image and pushes to ECR (tagged with commit SHA), via `ecr_push.yaml`
 3. `apply_task_definition` — runs Terraform plan+apply to update the ECS task definition, via `terraform_plan_and_apply.yml`
@@ -70,6 +70,6 @@ ENVIRONMENT=production make -f terraform/Makefile validate  # validate config
 ```
 
 - Backend: S3 bucket `cloud-nova-corp-terraform`, state key `bananas.rails/{environment}/terraform.tfstate`
-- IAM: assumes role `arn:aws:iam::205899621967:role/fullaccess`
+- IAM: assumes the `fullaccess` role in the production AWS account
 - Resources: ECS task definition (`bananas-bananas-web-production`)
 - Output: `ecs_task_defintion_bananas` — ARN of the deployed task definition (note: typo in output name is intentional, matches Terraform state)

@@ -57,6 +57,7 @@ jobs:
     with:
       github_environment: production-code-deploy
       ecs_task_definition: ${{ needs.apply_task_definition.outputs.ecs_task_definition_bananas }}
+      deployment_type: ${{ inputs.deployment_type || 'Blue/Green' }}
     secrets: inherit
 
   output_task_definition:

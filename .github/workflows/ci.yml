@@ -39,6 +39,15 @@ jobs:
       image_tag: ${{ needs.push_image.outputs.image_tag }}
     secrets: inherit
 
+  create_deployment:
+    if: github.ref == 'refs/heads/main'
+    needs: apply_task_definition
+    uses: ./.github/workflows/create-deployment.yml
+    with:
+      github_environment: production-code-deploy
+      ecs_task_definition: ${{ needs.apply_task_definition.outputs.ecs_task_definition_bananas }}
+    secrets: inherit
+
   output_task_definition:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04

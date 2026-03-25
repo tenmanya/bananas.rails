@@ -5,15 +5,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      deployment_type:
-        description: 'Deployment type'
-        required: false
-        default: 'Blue/Green'
-        type: choice
-        options:
-          - Blue/Green
-          - Canary 10%, 5 minutes
+  workflow_call:
 
 permissions:
   id-token: write
@@ -24,47 +16,3 @@ jobs:
     uses: ./.github/workflows/rails_ci.yml
     with:
       working_directory: bananas
-
-  push_image:
-    needs: ci
-    uses: ./.github/workflows/ecr_push.yaml
-    with:
-      commit_sha: ${{ github.sha }}
-      github_environment: bananas-ecr-push
-      build_context: bananas/
-      deployment_type: ${{ inputs.deployment_type || 'Blue/Green' }}
-
-  output_image_tag:
-    runs-on: ubuntu-24.04
-    needs: push_image
-    steps:
-      - name: Output image tag
-        run: |
-          echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"
-
-  apply_task_definition:
-    if: github.ref == 'refs/heads/main'
-    needs: push_image
-    uses: ./.github/workflows/terraform_plan_and_apply.yml
-    with:
-      image_tag: ${{ needs.push_image.outputs.image_tag }}
-    secrets: inherit
-
-  create_deployment:
-    if: github.ref == 'refs/heads/main'
-    needs: apply_task_definition
-    uses: ./.github/workflows/create-deployment.yml
-    with:
-      github_environment: production-code-deploy
-      ecs_task_definition: ${{ needs.apply_task_definition.outputs.ecs_task_definition_bananas }}
-      deployment_type: ${{ inputs.deployment_type || 'Blue/Green' }}
-    secrets: inherit
-
-  output_task_definition:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    needs: apply_task_definition
-    steps:
-      - name: Output ECS task definition ARN
-        run: |
-          echo "Deployed ECS task definition: ${{ needs.apply_task_definition.outputs.ecs_task_definition_bananas }}"

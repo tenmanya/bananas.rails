@@ -3,6 +3,11 @@ run-name: terraformm-apply-ecs-task-definition - ${{ inputs.module }}
 
 on:
   workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'The ECR image tag to deploy'
+        required: true
+        type: string
   workflow_call:
     inputs:
       image_tag:

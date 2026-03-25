@@ -32,6 +32,7 @@ jobs:
           echo "Pushed image tag: ${{ needs.push_image.outputs.image_tag }}"
 
   apply_task_definition:
+    if: github.ref == 'refs/heads/main'
     needs: push_image
     uses: ./.github/workflows/terraform-apply-task-definition.yml
     with:

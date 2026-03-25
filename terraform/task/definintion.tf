@@ -28,8 +28,10 @@ resource "aws_ecs_task_definition" "bananas" {
 
   container_definitions = jsonencode(concat([
     {
-      name              = local.task_definition.container_definition.name
-      image             = local.task_definition.container_definition.image
+      name = local.task_definition.container_definition.name
+
+      image = local.image # <<--- udpate the image
+
       essential         = true
       cpu               = local.task_definition.container_definition.cpu
       memoryReservation = local.task_definition.container_definition.memory_reservation

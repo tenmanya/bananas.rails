@@ -2,6 +2,9 @@
 
 A Rails API application deployed to AWS ECS via CodeDeploy, with Terraform-managed ECS task defintion.
 
+The ECS infarstructure on which the app is managed in [bananas.terraform](https://github.com/cloud-nova-crop/bananas.terraform).
+
+
 ## What it does
 
 Exposes a single API endpoint `GET /api/bananas` returning `{ "yellow": true }`.

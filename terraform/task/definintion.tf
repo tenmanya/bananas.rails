@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "bananas" {
     {
       name = local.task_definition.container_definition.name
 
-      image = local.image # <<--- udpate the image
+      image = var.image # <<--- udpate the image
 
       essential         = true
       cpu               = local.task_definition.container_definition.cpu

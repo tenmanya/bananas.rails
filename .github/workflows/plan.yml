@@ -73,7 +73,7 @@ jobs:
           TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }}
         run: |
           set -euo pipefail
-          ENVIRONMENT=${{ inputs.environment }} make -f "${{ github.workspace }}/terraform/Makefile" plan_write_file
+          ENVIRONMENT=${{ inputs.environment }} IMAGE=${{ inputs.image_tag }} make -f "${{ github.workspace }}/terraform/Makefile" plan_write_file
 
       - name: Upload Terraform plan file to S3
         working-directory: ${{ github.workspace }}

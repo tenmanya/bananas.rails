@@ -2,6 +2,10 @@ name: Push Image to ECR
 
 on:
   workflow_call:
+    outputs:
+      image_tag:
+        description: 'The full image tag that was pushed to ECR'
+        value: ${{ jobs.push_image.outputs.image_tag }}
     inputs:
       commit_sha:
         description: 'Commit SHA to use as the image tag'
@@ -34,6 +38,9 @@ jobs:
 
     environment: ${{ inputs.github_environment }}
 
+    outputs:
+      image_tag: ${{ steps.build_push.outputs.image_tag }}
+
     steps:
       - uses: actions/checkout@v6
 
@@ -47,8 +54,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push image
+        id: build_push
         env:
           IMAGE: ${{ steps.ecr_login.outputs.registry }}/${{ inputs.ecr_repository }}:${{ inputs.commit_sha }}
         run: |
           docker build --tag "$IMAGE" ${{ inputs.build_context }}
           docker push "$IMAGE"
+          echo "image_tag=$IMAGE" >> "$GITHUB_OUTPUT"

@@ -4,6 +4,16 @@ on:
   pull_request:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: 'Deployment type'
+        required: false
+        default: 'Blue/Green'
+        type: choice
+        options:
+          - Blue/Green
+          - Canary 10%, 5 minutes
 
 permissions:
   id-token: write
@@ -22,6 +32,7 @@ jobs:
       commit_sha: ${{ github.sha }}
       github_environment: bananas-ecr-push
       build_context: bananas/
+      deployment_type: ${{ inputs.deployment_type || 'Blue/Green' }}
 
   output_image_tag:
     runs-on: ubuntu-24.04

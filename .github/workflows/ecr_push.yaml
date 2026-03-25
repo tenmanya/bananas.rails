@@ -19,6 +19,11 @@ on:
         description: 'Docker build context directory'
         required: true
         type: string
+      deployment_type:
+        description: 'Deployment type (e.g. Blue/Green, Canary 10%, 5 minutes)'
+        required: false
+        type: string
+        default: 'Blue/Green'
 
 jobs:
   push_image:
@@ -49,3 +54,4 @@ jobs:
           docker build --tag "$IMAGE" ${{ inputs.build_context }}
           docker push "$IMAGE"
           echo "image_tag=$IMAGE" >> "$GITHUB_OUTPUT"
+          echo "Deployment type: ${{ inputs.deployment_type }}"

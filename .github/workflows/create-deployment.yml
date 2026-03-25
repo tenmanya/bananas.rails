@@ -1,0 +1,39 @@
+name: CodeDeploy Create Deployment
+
+on:
+  workflow_call:
+    inputs:
+      github_environment:
+        description: 'GitHub environment to deploy to'
+        required: true
+        type: string
+      ecs_task_definition:
+        description: 'ECS task definition ARN to deploy'
+        required: true
+        type: string
+
+jobs:
+  create_deployment:
+    runs-on: ubuntu-24.04
+
+    environment: ${{ inputs.github_environment }}
+
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Create CodeDeploy deployment
+        env:
+          ECS_TASK_DEFINITION: ${{ inputs.ecs_task_definition }}
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ vars.CODEDEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --revision '{
+              "revisionType": "AppSpecContent",
+              "appSpecContent": {
+                "content": "{\"version\":0.0,\"Resources\":[{\"TargetService\":{\"Type\":\"AWS::ECS::Service\",\"Properties\":{\"TaskDefinition\":\"'"$ECS_TASK_DEFINITION"'\",\"LoadBalancerInfo\":{\"ContainerName\":\"bananas\",\"ContainerPort\":3000}}}}]}"
+              }
+            }'

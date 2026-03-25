@@ -32,10 +32,17 @@ jobs:
       - name: Create CodeDeploy deployment
         env:
           ECS_TASK_DEFINITION: ${{ inputs.ecs_task_definition }}
+          DEPLOYMENT_TYPE: ${{ inputs.deployment_type }}
         run: |
+          case "$DEPLOYMENT_TYPE" in
+            "Canary 10%, 5 minutes") DEPLOYMENT_CONFIG="CodeDeployDefault.ECSCanary10Percent5Minutes" ;;
+            *) DEPLOYMENT_CONFIG="CodeDeployDefault.ECSAllAtOnce" ;;
+          esac
+
           aws deploy create-deployment \
             --application-name ${{ vars.CODEDEPLOY_APP_NAME }} \
             --deployment-group-name ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --deployment-config-name "$DEPLOYMENT_CONFIG" \
             --revision '{
               "revisionType": "AppSpecContent",
               "appSpecContent": {
